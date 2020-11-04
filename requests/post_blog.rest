@@ -1,0 +1,9 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+    "title": "Another example of a title",
+    "author": "Jeff Goldblume",
+    "url": "http://www.practice.com",
+    "likes": 10
+}

@@ -1,0 +1,29 @@
+{
+  "name": "bloglist_backend",
+  "version": "1.0.0",
+  "description": "Backend of blog list application",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "jest --verbose",
+    "lint": "eslint ."
+  },
+  "author": "Jacob Lepler",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.10.11",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.12.1",
+    "jest": "^26.6.2",
+    "nodemon": "^2.0.6"
+  },
+  "jest": {
+    "testEnvironment": "node"
+  }
+}

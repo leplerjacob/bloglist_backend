@@ -1,4 +1,3 @@
-const { log } = require('console')
 const blog = require('../models/blog')
 
 const dummy = (blogs) => {
@@ -18,25 +17,51 @@ const favoriteBlog = (blogs) => {
       mostLiked = blog
     }
   })
-  console.log((({ title, author, url }) => ({ title, author, url }))(mostLiked))
   return (({ title, author, url }) => ({ title, author, url }))(mostLiked)
 }
 
 const mostBlogs = (blogs) => {
   let blogsPerAuthor = {}
+
   blogs.map((blog) => {
-    if (!blogsPerAuthor[blog.name]) {
-      blogsPerAuthor[blog.name] = { author: blog.name, numPosts: 1 }
+    if (blogsPerAuthor[blog.author] === undefined) {
+      blogsPerAuthor[blog.author] = 1
     } else {
-      blogsPerAuthor[blog.name] = { ...rest, numPosts: ++blog.numPosts }
+      blogsPerAuthor[blog.author] = blogsPerAuthor[blog.author] + 1
     }
   })
-  console.log(blogsPerAuthor);
+
+  const authorWithMostPosts = Object.entries(blogsPerAuthor).reduce((a, b) =>
+    blogsPerAuthor[a] > blogsPerAuthor[b] ? a : b
+  )
+
+  return authorWithMostPosts
+}
+
+const mostLikedAuthor = (blogs) => {
+  let likesPerAuthor = {}
+
+  blogs.map((blog) => {
+    if (likesPerAuthor[blog.author] === undefined) {
+      likesPerAuthor[blog.author] = blog.likes
+    } else {
+      likesPerAuthor[blog.author] = likesPerAuthor[blog.author] + blog.likes
+    }
+  })
+
+  const authorWithMostLikes = Object.keys(likesPerAuthor).reduce((a, b) =>
+    likesPerAuthor[a] > likesPerAuthor[b] ? a : b
+  )
+  return {
+      author: authorWithMostLikes,
+      likes: likesPerAuthor[authorWithMostLikes]
+  }
 }
 
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
-  mostBlogs
+  mostBlogs,
+  mostLikedAuthor,
 }

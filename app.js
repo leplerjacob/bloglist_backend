@@ -7,7 +7,7 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 
 mongoose.connect(config.MONGOURL, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true }).then(() => {
-    console.log("Connected to database");
+    console.log("Connected to database", config.MONGOURL);
 }).catch((err) => {
     console.log("Connection error", err);
 })

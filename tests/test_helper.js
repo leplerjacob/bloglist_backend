@@ -44,21 +44,12 @@ initialBlogs = [
     likes: 0,
     __v: 0,
   },
-  {
-    _id: '5a422bc61b54a676234d17fc',
-    title: 'Type wars',
-    author: 'Robert C. Martin',
-    url: 'http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html',
-    likes: 2,
-    __v: 0,
-  },
 ]
 
 const findAll = async () => {
-    const blogs = await Blog.find({})
-    return blogs.map(blog => blog.toJSON())
+  const blogs = await Blog.find({})
+  return blogs.map((blog) => blog.toJSON())
 }
-
 
 // Returns most favorite blog
 const favoriteBlog = (blogs) => {
@@ -68,11 +59,13 @@ const favoriteBlog = (blogs) => {
       mostLiked = blog
     }
   })
-  return (({ title, author, url }) => ({ title, author, url }))(mostLiked)
+
+  return mostLiked
+  // return (({ title, author, url }) => ({ title, author, url }))(mostLiked)
 }
 
 module.exports = {
-    initialBlogs,
-    favoriteBlog,
-    findAll
+  initialBlogs,
+  favoriteBlog,
+  findAll,
 }

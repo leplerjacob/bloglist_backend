@@ -4,6 +4,5 @@ Content-Type: application/json
 {
     "title": "Another example of a title",
     "author": "Jeff Goldblume",
-    "url": "http://www.practice.com",
     "likes": 10
 }

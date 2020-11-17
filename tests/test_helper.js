@@ -1,4 +1,5 @@
 const Blog = require('../models/blog')
+const hashHelper = require('./test_hash')
 
 initialBlogs = [
   {
@@ -46,6 +47,25 @@ initialBlogs = [
   },
 ]
 
+const initialUsers = [
+  {
+    blogs: [],
+    username: 'root',
+    name: 'newuser',
+    passwordHash: 'password',
+    _id: '5fb2d0adffb0350ea0edac6c',
+    __v: 0,
+  },
+  {
+    blogs: [],
+    username: 'JoeSchmoe',
+    name: 'Joe Schmoe',
+    passwordHash: 'joeschmoe',
+    _id: '5fb4278186406d085cb83786',
+    __v: 0,
+  },
+]
+
 const findAll = async () => {
   const blogs = await Blog.find({})
   return blogs.map((blog) => blog.toJSON())
@@ -66,6 +86,7 @@ const favoriteBlog = (blogs) => {
 
 module.exports = {
   initialBlogs,
+  initialUsers,
   favoriteBlog,
   findAll,
 }

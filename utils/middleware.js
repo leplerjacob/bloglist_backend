@@ -1,11 +1,14 @@
 const errorHandler = (error, request, response, next) => {
-  // console.log(error.message);
-  if (error.message) {
-    return response.status(400).json({ error: 'There was an error' })
+  if (error.name === 'CastError') {
+    return response.status(400).json({ error: 'Malformatted id' })
+  } else if (error.name === 'ValidationError') {
+    console.log(error.errors);
+    return response.status(400).json({ error: 'Validation error' })
+  } else if (error.name === 'JsonWebTokenError') {
+    return response.status(401).json({ error: 'invalid token' })
   }
-  next(error)
 }
 
 module.exports = {
-    errorHandler
+  errorHandler,
 }

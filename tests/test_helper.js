@@ -1,5 +1,4 @@
 const Blog = require('../models/blog')
-const hashHelper = require('./test_hash')
 
 initialBlogs = [
   {

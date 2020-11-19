@@ -8,23 +8,28 @@ const helper = require('./test_helper')
 const bcrypt = require('bcrypt')
 
 beforeEach(async () => {
-  await Blog.deleteMany({})
   await User.deleteMany({})
+  await Blog.deleteMany({})
   const blogsObject = helper.initialBlogs.map((blog) => new Blog(blog))
   let promiseArray = blogsObject.map((blog) => blog.save())
   promiseArray.push(new Promise((resolve,reject) => {
-    helper.initialUsers.map(async (user) => {
-      await bcrypt.hash(user.passwordHash, 10, (err, hash) => {
+    let completedHash = 0
+    usersObject = helper.initialUsers.map(async (user) => {
+      await bcrypt.hash(user.passwordHash, 10, async (err, hash) => {
         if (err) {
           reject(err)
         } else {
             const newUser = new User({...user, passwordHash: hash})
-            newUser.save()
-            resolve(newUser)
+            const done = await Promise.resolve(newUser.save())
+            completedHash++
+        }
+        if(completedHash === 2) {
+          resolve()
         }
       })
     })
   }))
+
   await Promise.all(promiseArray)
 })
 
@@ -151,35 +156,36 @@ describe('update blog', () => {
 })
 
 describe('Tests api users', () => {
-  test('Response 200, get single initial user', async () => {
+  test('Response 200 and gets initial users in db', async () => {
 
-    // const users = await User.find({}).then(result => console.log(result))
-    
-    const singleUser = await api.get('/api/users').expect(200).expect('Content-Type', /application\/json/).then(result => console.log(result.body))
+    const users = await api.get('/api/users').expect(200).expect('Content-Type', /application\/json/).then(result => result.body)
 
-    return null
-
+    expect(users.length).toEqual(2)
   })
 
-  test('returns correct status code if password/username is missing', async () => {
-    const initialUsers = await api
+  test('returns correct status code if missing user properties or does not meet validation', async () => {
+    const initDbUsers = await api
       .get('/api/users')
       .expect(200)
       .expect('Content-Type', /application\/json/)
       .then((result) => result.body)
 
     const missingUsername = {
-      username: null,
-      name: 'TestingMissingUsername',
-      password: 'pass',
+      username: 'te',
+      name: '',
+      password: 'testpass',
     }
 
-    await api.post('/api/users').send(missingUsername).expect(400)
+    const savedUser = await api.post('/api/users').send(missingUsername).expect(400).then(result => result.body)
 
-    expect(initialUsers).toBe('Something')
+    if(savedUser.error) {
+      console.log(savedUser);
+    }
+
+    expect(helper.initialUsers.length).toEqual(initDbUsers.length)
+
   })
 
-  test('')
 })
 
 afterAll(() => {

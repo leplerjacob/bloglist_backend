@@ -6,15 +6,14 @@ const userSchema = mongoose.Schema({
         type: String,
         required: true,
         unique: true,
-        min: 3
+        minlength: 3
     },
     name: {
         type: String,
-    },
-    passwordHash: {
-        type: String,
         required: true,
+        minlength: 3
     },
+    passwordHash: String,
     blogs: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Blog'

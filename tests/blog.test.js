@@ -46,11 +46,13 @@ describe('Testing blog db api', () => {
     expect(result.body.length).toEqual(helper.initialBlogs.length)
   })
 
-  test('succeeds if latest blog is successfully posted', async () => {
+  test('returns 200 if successful blog post', async () => {
+
     const blogToPost = {
       title: 'Type wars',
       author: 'Robert C. Martin',
       url: 'http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html',
+      likes: 3
     }
 
     await api.post('/api/blogs').send(blogToPost).expect(201)
@@ -185,9 +187,38 @@ describe('Tests api users', () => {
     expect(helper.initialUsers.length).toEqual(initDbUsers.length)
 
   })
+  
+describe('Log in functionality', () => {
+  test('Response 200 when correct username and password', async () => {
+    const login = {
+      username: 'root',
+      password: 'password',
+      name: 'newuser'
+    }
+
+    const token = await api.post('/api/login').send(login).then(result => result.body)
+
+    console.log(token);
+  
+    expect(login).toMatchObject((({username, name}) => ({username, name}))(token))
+
+
+  })
+})
 
 })
 
+describe('tests with logged in user', () => {
+  test('returns 200, login success and post', async () => {
+
+    const userLoggingIn = {username: 'root', password: 'password'}
+
+    const result = await api.post('/api/login').send(userLoggingIn).expect(200).then(result => result.body)
+    
+    expect(result).not.toBe(null)
+  })
+})
+
 afterAll(() => {
-  mongoose.connection.close()
+  mongoose.disconnect()
 })

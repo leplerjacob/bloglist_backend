@@ -4,9 +4,13 @@ const blogsRouter = require('express').Router()
 const jwt = require('jsonwebtoken')
 
 blogsRouter.get('/', async (request, response, next) => {
-  await Blog.find({}).then((blogs) => {
-    response.json(blogs)
-  })
+  await Blog.find({})
+    .populate('user', {
+      username: 1,
+    })
+    .then((blogs) => {
+      response.json(blogs)
+    })
 })
 
 blogsRouter.get('/:id', async (request, response, next) => {
@@ -25,18 +29,18 @@ const retrieveToken = (request) => {
 
 blogsRouter.post('/', async (request, response) => {
   const token = retrieveToken(request)
+
   const blogProps = request.body
   if (token) {
-    const payload = jwt.verify(token, process.env.SECRET).catch(err => response.status(400).json({ error: 'Error with authorization' }))
+    const payload = jwt.verify(token, process.env.SECRET)
 
     const user = await User.findById(payload.id)
-  
+
     const newBlog = new Blog({
       title: blogProps.title,
       author: blogProps.author,
       url: blogProps.url,
-      likes: blogProps.likes || null,
-      user: user._id
+      user: user._id,
     })
 
     const savedBlog = await newBlog.save()
@@ -44,6 +48,8 @@ blogsRouter.post('/', async (request, response) => {
     await user.save()
 
     response.json(savedBlog)
+  } else {
+    response.status(400).json({ error: 'Missing authentication' })
   }
 })
 

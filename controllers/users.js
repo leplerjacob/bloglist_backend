@@ -3,10 +3,14 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const usersRouter = require('express').Router()
 
-
 usersRouter.get('/', async (request, response) => {
-  const users = await User.find({})
-  response.status(200).json(users)
+  const users = await User.find({}).populate('blog', {
+    url: 1,
+    title: 1,
+    author: 1,
+    id: 1,
+  }).then(blogs => response.status(200).json(blogs))
+  
 })
 
 usersRouter.post('/', async (request, response) => {
@@ -14,7 +18,7 @@ usersRouter.post('/', async (request, response) => {
 
   if (!body.password || body.password === '') {
     response.status(400).json({ error: 'A password must be provided' })
-  } else if(body.password.length < 3) {
+  } else if (body.password.length < 3) {
     response.status(400).json({ error: 'Password must meet specifications' })
   } else {
     const saltRounds = 10

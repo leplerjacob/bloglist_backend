@@ -6,6 +6,7 @@ initialBlogs = [
     title: 'React patterns',
     author: 'Michael Chan',
     url: 'https://reactpatterns.com/',
+    user: '5fb2d0adffb0350ea0edac6c',
     likes: 7,
     __v: 0,
   },
@@ -15,6 +16,7 @@ initialBlogs = [
     author: 'Edsger W. Dijkstra',
     url:
       'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
+    user: '5fb2d0adffb0350ea0edac6c',
     likes: 5,
     __v: 0,
   },
@@ -24,6 +26,7 @@ initialBlogs = [
     author: 'Edsger W. Dijkstra',
     url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
     likes: 12,
+    user: '5fb4278186406d085cb83786',
     __v: 0,
   },
   {
@@ -33,6 +36,7 @@ initialBlogs = [
     url:
       'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
     likes: 10,
+    user: '5fb4278186406d085cb83786',
     __v: 0,
   },
   {
@@ -42,13 +46,14 @@ initialBlogs = [
     url:
       'http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html',
     likes: 0,
+    user: '5fb4278186406d085cb83786',
     __v: 0,
   },
 ]
 
 const initialUsers = [
   {
-    blogs: [],
+    blogs: ['5a422a851b54a676234d17f7', '5a422aa71b54a676234d17f8'],
     username: 'root',
     name: 'newuser',
     passwordHash: 'password',
@@ -56,7 +61,11 @@ const initialUsers = [
     __v: 0,
   },
   {
-    blogs: [],
+    blogs: [
+      '5a422b3a1b54a676234d17f9',
+      '5a422b891b54a676234d17fa',
+      '5a422ba71b54a676234d17fb',
+    ],
     username: 'JoeSchmoe',
     name: 'Joe Schmoe',
     passwordHash: 'joeschmoe',
@@ -70,7 +79,6 @@ const findAll = async () => {
   return blogs.map((blog) => blog.toJSON())
 }
 
-// Returns most favorite blog
 const favoriteBlog = (blogs) => {
   let mostLiked = blogs[0]
   blogs.map((blog) => {
@@ -78,10 +86,15 @@ const favoriteBlog = (blogs) => {
       mostLiked = blog
     }
   })
-
   return mostLiked
-  // return (({ title, author, url }) => ({ title, author, url }))(mostLiked)
 }
+
+// const defaultUserLogin = async () => {
+//   return {
+//     username: initialUsers[0].username,
+//     password: initialUsers[0].password
+//   }
+// }
 
 module.exports = {
   initialBlogs,

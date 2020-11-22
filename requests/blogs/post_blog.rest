@@ -1,8 +1,10 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmYjk5ZDE5NDM0MmQ0NTg1OGVmZDUxMCIsImlhdCI6MTYwNTk5OTkwMn0.yWo4qdH60NTiex1Cv5MfbbefqhaKRLEe3HwwEs80tDU
 
 {
     "title": "Another example of a title",
     "author": "Jeff Goldblume",
+    "url":"www.somewebsitetest.com",
     "likes": 10
 }

@@ -65,15 +65,6 @@ describe('CRUD', () => {
     })
   })
   describe('DELETE BLOG', () => {
-    test('delete blog', async () => {
-      const blogIdToDelete = helper.initialBlogs[0]._id
-      await api.delete(`/api/blogs/${blogIdToDelete}`).expect(204)
-      const blogsAfter = await api
-        .get('/api/blogs')
-        .expect(200)
-        .then((results) => results.body)
-      expect(helper.initialBlogs.length - 1).toEqual(blogsAfter.length)
-    })
     test('delete blog with token', async () => {
       const rootToken = await api
         .post('/api/login')
@@ -83,12 +74,21 @@ describe('CRUD', () => {
 
       const rootUser = await helper.initialUsers[0]
 
-      const deletedBlog = await api.delete(`/api/blogs/${rootUser.blogs[0]}`).set('Authorization', 'bearer ' + rootToken.token).expect(204)
+      const deletedBlog = await api
+        .delete(`/api/blogs/${rootUser.blogs[0]}`)
+        .set('Authorization', 'bearer ' + rootToken.token)
+        .expect(204)
 
-      const updatedUser = await api.get('/api/users').then(res => res.body).then(users => users.filter(user => user.id === helper.initialUsers[0]._id))
+      const updatedUser = await api
+        .get('/api/users')
+        .then((res) => res.body)
+        .then((users) =>
+          users.filter((user) => user.id === helper.initialUsers[0]._id)
+        )
 
-      expect(updatedUser[0].blogs.length).toEqual(helper.initialUsers[0].blogs.length - 1)
-
+      expect(updatedUser[0].blogs.length).toEqual(
+        helper.initialUsers[0].blogs.length - 1
+      )
     })
   })
   describe('UPDATE BLOG', () => {
@@ -144,27 +144,27 @@ describe('VALIDATION', () => {
         .then((result) => result.body)
       expect(blogs[blogs.length - 1]).toHaveProperty('likes', 0)
     })
-    describe('USER VALIDATION', () => {
-      test('validate user properties failure', async () => {
-        const initDbUsers = await api
-          .get('/api/users')
-          .expect(200)
-          .expect('Content-Type', /application\/json/)
-          .then((result) => result.body)
-        const missingProps = {
-          username: 'te',
-          name: '',
-          password: 'testpass',
-        }
-        const savedUser = await api
-          .post('/api/users')
-          .send(missingProps)
-          .expect(400)
-          .then((result) => result.body)
-        if (savedUser.error) {
-        }
-        expect(helper.initialUsers.length).toEqual(initDbUsers.length)
-      })
+  })
+  describe('USER VALIDATION', () => {
+    test('validate user properties failure', async () => {
+      const initDbUsers = await api
+        .get('/api/users')
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+        .then((result) => result.body)
+      const missingProps = {
+        username: 'te',
+        name: '',
+        password: 'testpass',
+      }
+      const savedUser = await api
+        .post('/api/users')
+        .send(missingProps)
+        .expect(400)
+        .then((result) => result.body)
+      if (savedUser.error) {
+      }
+      expect(helper.initialUsers.length).toEqual(initDbUsers.length)
     })
   })
 })

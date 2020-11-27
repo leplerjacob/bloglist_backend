@@ -63,32 +63,45 @@ describe('CRUD', () => {
         .then((result) => result.body)
       expect(postedBlog).not.toBe(null)
     })
-    describe('DELETE BLOG', () => {
-      test('delete blog and return', async () => {
-        const blogIdToDelete = helper.initialBlogs[0]._id
-        await api.delete(`/api/blogs/${blogIdToDelete}`).expect(204)
-        const blogsAfter = await api
-          .get('/api/blogs')
-          .expect(200)
-          .then((results) => results.body)
-        expect(helper.initialBlogs.length - 1).toEqual(blogsAfter.length)
-      })
-      describe('UPDATE BLOG', () => {
-        test('update blog and return', async () => {
-          const blogId = helper.initialBlogs[2]._id
-          const updateBlogLikes = {
-            likes: 10,
-          }
-          await api
-            .put(`/api/blogs/${blogId}`)
-            .send(updateBlogLikes)
-            .expect(200)
-          const initialBlogs = await api
-            .get(`/api/blogs/${blogId}`)
-            .then((result) => result.body)
-          expect(updateBlogLikes.likes).toEqual(initialBlogs.likes)
-        })
-      })
+  })
+  describe('DELETE BLOG', () => {
+    test('delete blog', async () => {
+      const blogIdToDelete = helper.initialBlogs[0]._id
+      await api.delete(`/api/blogs/${blogIdToDelete}`).expect(204)
+      const blogsAfter = await api
+        .get('/api/blogs')
+        .expect(200)
+        .then((results) => results.body)
+      expect(helper.initialBlogs.length - 1).toEqual(blogsAfter.length)
+    })
+    test('delete blog with token', async () => {
+      const rootToken = await api
+        .post('/api/login')
+        .send({ username: 'root', password: 'password' })
+        .expect(200)
+        .then((res) => res.body)
+
+      const rootUser = await helper.initialUsers[0]
+
+      const deletedBlog = await api.delete(`/api/blogs/${rootUser.blogs[0]}`).set('Authorization', 'bearer ' + rootToken.token).expect(204)
+
+      const updatedUser = await api.get('/api/users').then(res => res.body).then(users => users.filter(user => user.id === helper.initialUsers[0]._id))
+
+      expect(updatedUser[0].blogs.length).toEqual(helper.initialUsers[0].blogs.length - 1)
+
+    })
+  })
+  describe('UPDATE BLOG', () => {
+    test('update blog and return', async () => {
+      const blogId = helper.initialBlogs[2]._id
+      const updateBlogLikes = {
+        likes: 10,
+      }
+      await api.put(`/api/blogs/${blogId}`).send(updateBlogLikes).expect(200)
+      const initialBlogs = await api
+        .get(`/api/blogs/${blogId}`)
+        .then((result) => result.body)
+      expect(updateBlogLikes.likes).toEqual(initialBlogs.likes)
     })
   })
 })

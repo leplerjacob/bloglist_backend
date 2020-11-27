@@ -13,6 +13,16 @@ usersRouter.get('/', async (request, response) => {
   
 })
 
+// usersRouter.get('/:id', async (request, response) => {
+//   const userId = request.params.id
+
+//   const userBlogs = await User.findById(userId)
+
+//   console.log(userBlogs);
+
+//   response.status(200).json(userBlogs)
+// })
+
 usersRouter.post('/', async (request, response) => {
   const body = request.body
 

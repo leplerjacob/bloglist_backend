@@ -28,26 +28,20 @@ const retrieveToken = (request) => {
 }
 
 blogsRouter.post('/', async (request, response) => {
-  const token = retrieveToken(request)
-
   const blogProps = request.body
-  if (token) {
-    const payload = jwt.verify(token, process.env.SECRET)
-
-    const user = await User.findById(payload.id)
-
-    const newBlog = new Blog({
+  const payload = request.user
+  if (payload) {
+    const newBlog = await new Blog({
       title: blogProps.title,
       author: blogProps.author,
       url: blogProps.url,
-      user: user._id,
+      user: payload.id,
     })
-
     const savedBlog = await newBlog.save()
-    user.blogs = user.blogs.concat(savedBlog._id)
+    const user = await User.findById(payload.id)
+    user.blogs = await user.blogs.concat(savedBlog._id)
     await user.save()
-
-    response.json(savedBlog)
+    response.status(200).json(savedBlog)
   } else {
     response.status(400).json({ error: 'Missing authentication' })
   }
@@ -68,9 +62,21 @@ blogsRouter.put('/:id', async (request, response) => {
 })
 
 blogsRouter.delete('/:id', async (request, response) => {
-  await Blog.findByIdAndRemove(request.params.id)
 
-  response.status(204).end()
+  if(request.user){
+    const deletedBlog = await Blog.findByIdAndRemove(request.params.id).then(res => res.toJSON())
+
+    const user = await User.findById(request.user.id)
+
+    await User.findByIdAndUpdate(request.user.id, {blogs: user.blogs.filter(blog => blog.toString() !== request.params.id)})
+
+    response.status(204).end()
+  
+  } else {
+    response.status(401)
+  }
+
+
 })
 
 module.exports = blogsRouter

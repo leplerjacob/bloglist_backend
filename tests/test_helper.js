@@ -1,4 +1,5 @@
 const Blog = require('../models/blog')
+const jwt = require('jsonwebtoken')
 
 initialBlogs = [
   {

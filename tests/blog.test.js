@@ -221,6 +221,7 @@ describe('GET', () => {
         .post('/api/login')
         .send(login)
         .then((result) => result.body)
+
       expect(login).toMatchObject(
         (({ username, name }) => ({ username, name }))(token)
       )

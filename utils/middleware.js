@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken')
 
 const extractTokenAndVerify = async (request, response, next) => {
 
-  const reqMethods = ['POST', 'DELETE']
+  const reqMethods = ['POST', 'DELETE', 'PUT']
 
   if (
     request.path.includes('/api/blogs') &&

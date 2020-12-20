@@ -4,12 +4,24 @@ const blogsRouter = require('express').Router()
 const jwt = require('jsonwebtoken')
 
 blogsRouter.get('/', async (request, response, next) => {
-  await Blog.find({})
+  const blogs = await Blog.find({})
     .populate('user', {
       username: 1,
     })
-    .then((blogs) => {
+    .then(async (blogs) => {
       response.json(blogs)
+      const users = await User.find({}).then((users) => {
+        const currentBlogs = blogs.map((blog) => JSON.stringify(blog.id))
+        let userBlogs = []
+        users.map(async (user) => {
+          user.blogs.forEach((blog) => {
+            if (currentBlogs.includes(JSON.stringify(blog))) {
+              userBlogs.push(blog)
+            }
+          })
+          await User.findByIdAndUpdate(user.id, {blogs: userBlogs}, )
+        })
+      })
     })
 })
 
@@ -80,3 +92,5 @@ blogsRouter.delete('/:id', async (request, response) => {
 })
 
 module.exports = blogsRouter
+
+// 5fc92a770552e15a30b5fe6b

@@ -1,13 +1,13 @@
 const jwt = require('jsonwebtoken')
 
 const extractTokenAndVerify = async (request, response, next) => {
-
+  
   const reqMethods = ['POST', 'DELETE', 'PUT']
 
   if (
     request.path.includes('/api/blogs') &&
     reqMethods.indexOf(request.method) !== -1 &&
-    request.get('Authorization') !== null
+    request.get('Authorization') !== null && typeof request.get('Authorization') !== 'undefined' 
   ) {
     const [method, token] = request.get('authorization').split(' ')
 

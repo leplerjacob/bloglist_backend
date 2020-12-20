@@ -4,7 +4,10 @@ const bcrypt = require('bcrypt')
 const loginRouter = require('express').Router()
 
 loginRouter.post('/', async (request, response) => {
+
   const body = request.body
+
+  console.log("this runs")
 
   const user = await User.findOne({ username: body.username })
 

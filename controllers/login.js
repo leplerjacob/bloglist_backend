@@ -7,8 +7,6 @@ loginRouter.post('/', async (request, response) => {
 
   const body = request.body
 
-  console.log("this runs")
-
   const user = await User.findOne({ username: body.username })
 
   if (!user) {
